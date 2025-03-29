@@ -1,0 +1,19 @@
+venv/
+.
+
+
+# IDE archieves
+.idea/
+.vscode/
+__pycache__/
+
+# temporary files
+*.pyc
+*.pyo
+*.pyd
+*.swp
+
+# big data
+data/raw/
+*.pdf
+*.zip
