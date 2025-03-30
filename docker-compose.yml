@@ -1,0 +1,9 @@
+services:
+  intuitive:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: scrapping
+    ports:
+      - 5432:5432

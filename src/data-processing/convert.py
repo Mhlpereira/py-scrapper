@@ -39,7 +39,7 @@ def transform_data(anexo_i_path, your_name):
         csv_filename = "rol_procedimentos.csv"
         combined_table.to_csv(csv_filename, index=False, encoding="utf-8")
 
-        zip_filename = f"Teste_{mario}.zip"
+        zip_filename = f"Teste_{mario_henrique}.zip"
         with zipfile.ZipFile(zip_filename, "w") as zipf:
             zipf.write(csv_filename)
 
@@ -63,6 +63,6 @@ if __name__ == "__main__":
             break
 
     if anexo_i_path:
-        transform_data(anexo_i_path, "Mario")
+        transform_data(anexo_i_path, "mario_henrique")
     else:
         print("Anexo I not found in the extracted files")
