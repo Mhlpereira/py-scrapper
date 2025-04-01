@@ -4,17 +4,21 @@ import zipfile
 from bs4 import BeautifulSoup
 
 
-def download_arquives():
+def download_files():
     url = "https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos"
 
     if not os.path.exists("downloads"):
         os.makedirs("downloads")
 
-    response = requests.get(url)
+    header = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+    }
+
+    response = requests.get(url, headers=header)
     soup = BeautifulSoup(response.content, "html.parser")
 
     pdf_links = []
-    for link in soup.find_all("a", href=True):
+    for link in soup.find_all("a", class_="internal-link", href=True):
         href = link["href"]
         if "Anexo" in link.text and href.endswith(".pdf"):
             if "Anexo I" in link.text or "Anexo II" in link.text:
@@ -41,4 +45,4 @@ def download_arquives():
 
 
 if __name__ == "__main__":
-    download_arquives()
+    download_files()
