@@ -1,9 +1,17 @@
+
 services:
-  intuitive:
+  ans_database:
     image: postgres:15-alpine
-    environment:
-      POSTGRES_PASSWORD: root
-      POSTGRES_USER: root
-      POSTGRES_DB: scrapping
+    container_name: ans_postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=ans_database
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+volumes:
+  postgres_data:

@@ -1,7 +1,6 @@
 venv/
 .
 
-
 # IDE archieves
 .idea/
 .vscode/
@@ -17,3 +16,4 @@ __pycache__/
 data/raw/
 *.pdf
 *.zip
+*.csv
