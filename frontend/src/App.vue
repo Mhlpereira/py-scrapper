@@ -24,15 +24,12 @@
       </div>
     </div>
 
-    <!-- Loading spinner -->
     <div v-if="loading" class="flex justify-center my-8">
       <spinner-component />
     </div>
 
-    <!-- Error message -->
     <error-message v-if="error" :message="error" @close="error = null" />
 
-    <!-- Results section -->
     <results-table v-if="results.length > 0 && !loading" :results="results" />
 
     <empty-state v-if="results.length === 0 && !loading && searched" />
