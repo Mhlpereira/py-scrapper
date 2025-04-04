@@ -7,6 +7,21 @@ MYSQL = mysql -u $(DB_USER) -p$(DB_PASSWORD) $(DB_NAME)
 all: setup_db import_dados download_anexos formatando_dados
 	@echo "Todos os passos concluídos com sucesso!"
 
+setup: 
+	@echo "🔧 Criando e ativando ambiente virtual..."
+	test -d $(VENV_DIR) || python3 -m venv $(VENV_DIR)
+	@echo "📦 Instalando dependências..."
+	$(PIP) install -r backend/requirements.txt
+	@echo "✅ Setup concluído! Para ativar o ambiente, execute 'source $(VENV_DIR)/bin/activate'"
+
+setup-frontend:
+	@echo "📦 Instalando dependências do frontend..."
+	cd frontend && npm install
+
+run-frontend: 
+	@echo "🌐 Iniciando frontend..."
+	cd frontend && npm run dev
+	
 download_anexos:
 	@echo "Baixando anexos..."
 	@cd backend/web-scraper && python scraper.py
@@ -34,4 +49,6 @@ import_dados: backend/db/importacao_postgres.sql
 	# @$(MYSQL) < sql/importacao_mysql.sql  # Descomente para MySQL
 	@echo "Dados importados com sucesso!"
 
-
+run-backend: 
+	@echo "🚀 Iniciando backend..."
+	$(PYTHON) -m uvicorn app.main:app --reload

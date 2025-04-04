@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
+import numpy as np
 
 app = FastAPI()
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,24 +13,35 @@ app.add_middleware(
 
 try:
     df_operadoras = pd.read_csv(
-        "data/operadoras_ativas.csv",
+        "../db/dados_ans/operadoras_ativas.csv",
         sep=";",
-        encoding="latin1",
-        on_bad_lines="skip"
+        encoding='latin1',
+        on_bad_lines='skip',
+        dtype=str 
     )
     df_operadoras.columns = df_operadoras.columns.str.lower().str.replace(" ", "_")
 except Exception as e:
     print(f"Erro ao carregar CSV: {e}")
     df_operadoras = pd.DataFrame()
 
-@app.get("/api/operadoras")
-async def buscar_operadoras(termo: str = Query(None, min_length=2)):
+@app.get("/api/operadoras/search")
+async def buscar_operadoras(q: str = Query(None, min_length=2)):
     if df_operadoras.empty:
         raise HTTPException(status_code=500, detail="Dados não carregados")
     
-    termo = termo.lower()
-    resultados = df_operadoras[
-        df_operadoras["razao_social"].str.lower().str.contains(termo, na=False)
-    ].head(50) 
+    try:
+        termo = q.lower()
+        mask = (
+            df_operadoras["razao_social"].str.lower().str.contains(termo, na=False) |
+            df_operadoras["nome_fantasia"].str.lower().str.contains(termo, na=False) |
+            df_operadoras["cidade"].str.lower().str.contains(termo, na=False) |
+            df_operadoras["uf"].str.lower().str.contains(termo, na=False)
+        )
+        
+        resultados = df_operadoras[mask].head(50)
+        resultados = resultados.replace({np.nan: None})  # Converte NaN para None
+        
+        return {"results": resultados.to_dict(orient="records")}
     
-    return resultados.to_dict(orient="records")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Erro na busca: {str(e)}")
