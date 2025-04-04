@@ -1,3 +1,5 @@
+BEGIN;
+
 CREATE TABLE IF NOT EXISTS operadoras (
     id SERIAL PRIMARY KEY,
     registro_ans VARCHAR(20) NOT NULL UNIQUE,
@@ -35,3 +37,5 @@ CREATE TABLE IF NOT EXISTS demonstracoes (
 CREATE INDEX idx_demonstracoes_registro_ans ON demonstracoes(registro_ans);
 CREATE INDEX idx_demonstracoes_data ON demonstracoes(data);
 CREATE INDEX idx_demonstracoes_conta ON demonstracoes(conta);
+
+COMMIT;

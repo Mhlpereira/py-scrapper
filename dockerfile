@@ -1,6 +1,27 @@
+FROM python:3.9 as backend
+
+WORKDIR /app/backend
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY backend .
+
+FROM node:23.8 as frontend
+
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend .
+
 FROM python:3.9
+
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+COPY --from=backend /app/backend /app/backend
+
+COPY --from=frontend /app/frontend /app/frontend
+
+COPY backend/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["make", "run-all"]

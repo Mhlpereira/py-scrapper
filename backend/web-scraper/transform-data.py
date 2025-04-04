@@ -6,6 +6,7 @@ import os
 def transform_data(anexo_i_path):
     name = "mario_henrique_lino_pereira"
 
+
     rol_tables = []
 
     with pdfplumber.open(anexo_i_path) as pdf:
@@ -55,13 +56,14 @@ def transform_data(anexo_i_path):
 
 
 if __name__ == "__main__":
+    out_dir = "backend/web-scraper/extracted"
     with zipfile.ZipFile("anexos.zip", "r") as zip_ref:
-        zip_ref.extractall("extracted")
+        zip_ref.extractall(out_dir)
 
     anexo_i_path = None
-    for file in os.listdir("extracted"):
+    for file in os.listdir(out_dir):
         if "Anexo_I" in file and file.endswith(".pdf"):
-            anexo_i_path = os.path.join("extracted", file)
+            anexo_i_path = os.path.join(out_dir, file)
             break
 
     if anexo_i_path:

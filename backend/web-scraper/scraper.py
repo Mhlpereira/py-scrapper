@@ -5,9 +5,10 @@ from bs4 import BeautifulSoup
 
 def download_files():
     url = "https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos"
+    dowload_dir = "backend/web-scraper/downloads"
     
-    if not os.path.exists("downloads"):
-        os.makedirs("downloads")
+    if not os.path.exists(dowload_dir):
+        os.makedirs(dowload_dir)
     
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
@@ -21,7 +22,7 @@ def download_files():
     
     downloaded_files = []
     for pdf_url in pdf_links:
-        filename = os.path.join("downloads", pdf_url.split('/')[-1])
+        filename = os.path.join(dowload_dir, pdf_url.split('/')[-1])
         
         pdf_response = requests.get(pdf_url)
         with open(filename, 'wb') as f:

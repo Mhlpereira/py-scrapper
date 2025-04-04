@@ -1,54 +1,58 @@
+PYTHON = backend/venv/bin/python
+
 DB_NAME = ans_database
 DB_USER = postgres
-DB_PASSWORD = sua_senha
-PSQL = PGPASSWORD=$(DB_PASSWORD) psql -h localhost -U $(DB_USER) -d $(DB_NAME)
-MYSQL = mysql -u $(DB_USER) -p$(DB_PASSWORD) $(DB_NAME)
+DB_PASSWORD = postgres
+PSQL = PGPASSWORD=postgres psql -h localhost -U $(DB_USER)  -d $(DB_NAME)
 
-all: setup_db import_dados download_anexos formatando_dados
-	@echo "Todos os passos concluídos com sucesso!"
+.PHONY: all 
 
-setup: 
-	@echo "🔧 Criando e ativando ambiente virtual..."
-	test -d $(VENV_DIR) || python3 -m venv $(VENV_DIR)
-	@echo "📦 Instalando dependências..."
-	$(PIP) install -r backend/requirements.txt
-	@echo "✅ Setup concluído! Para ativar o ambiente, execute 'source $(VENV_DIR)/bin/activate'"
+all: setup setup-db download_anexos formatando_dados executando_dados formatando_dados_demonstracao seed-db setup-frontend run-all
+
+setup:
+	
+	@echo "Configurando ambiente..."
+	cd backend && python3 -m venv venv
+	backend/venv/bin/pip install --upgrade pip
+	backend/venv/bin/pip  install -r backend/requirements.txt
+	@echo "Setup concluído!"
 
 setup-frontend:
-	@echo "📦 Instalando dependências do frontend..."
+	@echo " Instalando dependências do frontend..."
 	cd frontend && npm install
 
-run-frontend: 
-	@echo "🌐 Iniciando frontend..."
-	cd frontend && npm run dev
-	
+setup-db:
+	@echo " Configurando banco de dados..."
+	docker compose up -d db
+	sleep 5
+	@echo " Banco de dados configurado!"
+
 download_anexos:
-	@echo "Baixando anexos..."
-	@cd backend/web-scraper && python scraper.py
-	@echo "Baixando anexos..."
+	@echo " Baixando anexos..."
+	$(PYTHON) backend/web-scraper/scraper.py
 
 formatando_dados:
-	@echo "Formatando dados..."
-	@cd backend/web-scraper && python transform-data.py
-	@echo "Formatando dados..."
+	@echo " Formatando dados..."
+	$(PYTHON) backend/web-scraper/transform-data.py
 
-download_dados:
-	@echo "Baixando dados da ANS..."
-	@cd backend/db && python scraper-3.py
-	@echo "Download concluído!"
+formatando_dados_demonstracao:
+	@echo " Formatando dados contabeis..."
+	$(PYTHON) backend/db/transform-cont.py
 
-setup_db:  backend/db/criacao_tabelas.sql
-	@echo "Criando estrutura do banco de dados..."
-	@$(PSQL) -f $<  # Para PostgreSQL
-	# @$(MYSQL) < $<  # Descomente para MySQL
-	@echo "Estrutura criada com sucesso!"
+executando_dados:
+	@echo " Executando dados..."
+	$(PYTHON) backend/db/scraper-3.py
 
-import_dados: backend/db/importacao_postgres.sql
-	@echo "Importando dados para o PostgreSQL..."
-	@$(PSQL) -f $<
-	# @$(MYSQL) < sql/importacao_mysql.sql  # Descomente para MySQL
-	@echo "Dados importados com sucesso!"
+seed-db:
+	@echo " Seeding..."
+	$(PYTHON) backend/db/seed-db.py
 
-run-backend: 
-	@echo "🚀 Iniciando backend..."
-	$(PYTHON) -m uvicorn app.main:app --reload
+run-backend:
+	@echo " Iniciando backend..."
+	$(PYTHON) -m uvicorn backend.app.main:app --reload
+
+run-frontend:
+	@echo " Iniciando frontend..."
+	cd frontend && npm run dev &
+
+run-all: run-frontend run-backend

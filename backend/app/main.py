@@ -13,7 +13,7 @@ app.add_middleware(
 
 try:
     df_operadoras = pd.read_csv(
-        "../db/dados_ans/operadoras_ativas.csv",
+        "../../dados_ans/operadoras_ativas.csv",
         sep=";",
         encoding='latin1',
         on_bad_lines='skip',
