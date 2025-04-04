@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import numpy as np
+import os
 
 app = FastAPI()
 
@@ -11,9 +12,12 @@ app.add_middleware(
     allow_methods=["GET"],
 )
 
+base_path = os.path.join("backend", "db", "dados_ans")
+operadoras_csv = os.path.join(base_path, "operadoras_ativas.csv")
+
 try:
     df_operadoras = pd.read_csv(
-        "../../dados_ans/operadoras_ativas.csv",
+        operadoras_csv,
         sep=";",
         encoding='latin1',
         on_bad_lines='skip',

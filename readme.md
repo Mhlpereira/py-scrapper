@@ -1,7 +1,9 @@
 Sistema utilizando o Makefile para automação 
 
-```
+
 Utilize o make all para executar os passos
+```
+make all
 ```
 
 Após a execução você pode usar o plsql para verificar as tabelas dentro do banco de dados no container docker
