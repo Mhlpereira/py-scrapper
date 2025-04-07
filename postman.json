@@ -1,0 +1,37 @@
+{
+    "info": {
+      "_postman_id": "a1b2c3d4-e5f6-7890-f1e2-d3c4b5a6978",
+      "name": "ANS Operadoras API",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+      "description": "Coleção para testar a API de busca de operadoras de saúde"
+    },
+    "item": [
+      {
+        "name": "Busca Operadoras",
+        "request": {
+          "method": "GET",
+          "header": [],
+          "url": {
+            "raw": "http://localhost:5173/api/operadoras/search?q=Bahia",
+            "protocol": "http",
+            "host": [
+              "localhost"
+            ],
+            "port": "5173",
+            "path": [
+              "api",
+              "operadoras",
+              "search"
+            ],
+            "query": [
+              {
+                "key": "q",
+                "value": "Bahia"
+              }
+            ]
+          }
+        },
+        "response": []
+      }
+    ]
+  }
